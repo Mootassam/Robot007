@@ -3,7 +3,6 @@
   gap: 80px;
   
 }
-
 .generate {
   display: flex;
   flex-direction: column;
@@ -18,8 +17,6 @@
   flex-direction: column;
   width: 495px;
   gap: 10px;
- 
-  
 }
 
 .form__group {

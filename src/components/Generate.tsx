@@ -2,7 +2,40 @@ import NumberGenerator from "../utils/Number";
 import "./generate.css";
 import Select from "react-select";
 import Countries from "../utils/Countries";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 function Generate() {
+  const [numbers, setNumbers] = useState([""]);
+  const [loading, setLoading] = useState(false);
+  const [saveloading, setsaveLoading] = useState(false);
+
+  const generateNumbers = async () => {
+    setLoading(true);
+    const listPhoneNumbers = await axios.get(
+      "http://localhost:8080/api/phone/generate"
+    );
+    setNumbers(listPhoneNumbers.data);
+    setLoading(false);
+  };
+
+  const saveNumber = async () => {
+    try {
+ 
+
+      await axios.post("http://localhost:8080/api/phone/save", {
+        users: numbers,
+      });
+
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    generateNumbers();
+  }, []);
+
   return (
     <div className="app__generate">
       <div className="generate">
@@ -34,11 +67,19 @@ function Generate() {
           </div>
 
           <div className="form__group">
-            <label htmlFor="">Country</label>
-            <button>Generate 1000 </button>
+            <button onClick={generateNumbers} disabled={loading}>
+              {" "}
+              {loading ? "Generating..." : "Generate 1000 Numbers"}
+            </button>
           </div>
           <div className="form__group">
-            <button className="start">Start</button>
+            <button
+              className="start"
+              onClick={saveNumber}
+              disabled={saveloading}
+            >
+              Start
+            </button>
           </div>
           <div className="form__group">
             <button className="stop">Stop</button>
@@ -46,19 +87,25 @@ function Generate() {
 
           <div className="customer__reply">
             <div className="section__customer">
-              <label htmlFor="" className="sub__title">Customer have WhatsApp</label>
-              <div className="spinner__big">
-                <span>20</span>
-              </div>
-            </div>
-            <div className="section__customer" >
-              <label htmlFor="" className="sub__title">Customer Reply</label>
+              <label htmlFor="" className="sub__title">
+                Customer have WhatsApp
+              </label>
               <div className="spinner__big">
                 <span>20</span>
               </div>
             </div>
             <div className="section__customer">
-              <label htmlFor="" className="sub__title">Customer have WhatsApp</label>
+              <label htmlFor="" className="sub__title">
+                Customer Reply
+              </label>
+              <div className="spinner__big">
+                <span>20</span>
+              </div>
+            </div>
+            <div className="section__customer">
+              <label htmlFor="" className="sub__title">
+                Customer have WhatsApp
+              </label>
               <div className="spinner__big">
                 <span>20</span>
               </div>
@@ -68,26 +115,35 @@ function Generate() {
       </div>
 
       <div className="generate__table">
-        <table>
-          <tr>
-            <td className="title">Phone Number</td>
-            <td className="title"> WhatsApp</td>
-            <td className="title"> Sent Message</td>
-            <td className="done">done</td>
-          </tr>
+        {loading && <h1> Loading ... </h1>}
+        {!loading && (
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <td className="title">Phone Number</td>
+                  <td className="title"> WhatsApp</td>
+                  <td className="title"> Sent Message</td>
+                  <td className="done">done</td>
+                </tr>
+              </thead>
 
-          {NumberGenerator.generatePhoneNumbers().map((item) => (
-            <tr>
-              <td className="phonenumber">{item}</td>
-              <td> WhatsApp</td>
-              <td>Sent Message</td>
-              <td className="success">
-                <div className="spinner"></div>
-                done
-              </td>
-            </tr>
-          ))}
-        </table>
+              <tbody>
+                {numbers?.map((item, index) => (
+                  <tr key={index}>
+                    <td className="phonenumber">{item}</td>
+                    <td> WhatsApp</td>
+                    <td>Sent Message</td>
+                    <td className="success">
+                      <div className="spinner"></div>
+                      done
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
     </div>
   );
