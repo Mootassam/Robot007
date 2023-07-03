@@ -1,8 +1,8 @@
 .app__generate {
   display: flex;
   gap: 80px;
-  
 }
+
 .generate {
   display: flex;
   flex-direction: column;
@@ -173,4 +173,10 @@ span {
   display: flex; 
   flex-direction: column;
   align-items: center;
+ }
+
+ .upload{ 
+  width: 100%;
+  border:0; 
+  background-color: #e9e3e3;
  }

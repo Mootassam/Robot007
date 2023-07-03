@@ -9,6 +9,7 @@ function Generate() {
   const [numbers, setNumbers] = useState([""]);
   const [loading, setLoading] = useState(false);
   const [saveloading, setsaveLoading] = useState(false);
+  const [shownew, setShowNew] = useState(false);
 
   const generateNumbers = async () => {
     setLoading(true);
@@ -21,12 +22,9 @@ function Generate() {
 
   const saveNumber = async () => {
     try {
- 
-
       await axios.post("http://localhost:8080/api/phone/save", {
         users: numbers,
       });
-
     } catch (error) {
       setLoading(false);
     }
@@ -40,6 +38,25 @@ function Generate() {
     <div className="app__generate">
       <div className="generate">
         <div className="generate__form">
+          <div className="form__group">
+            <label htmlFor=""> Choose your best </label>
+            <button  onClick={() => setShowNew(false)}>
+              {" "}
+              Gnerate New Numbers{" "}
+            </button>
+            <button onClick={() => setShowNew(true)}> Upload Exits number</button>
+          </div>
+
+          {shownew && (
+            <div className="form__group">
+              <label htmlFor=""> Upload </label>
+
+              <input type="file" className="upload" />
+            </div>
+          )}
+        </div>
+
+        {!shownew && <div className="generate__form">
           <div className="form__group">
             <label htmlFor="">Phone Number</label>
             <select name="phonenumber" id="">
@@ -111,7 +128,8 @@ function Generate() {
               </div>
             </div>
           </div>
-        </div>
+        </div>  }
+      
       </div>
 
       <div className="generate__table">

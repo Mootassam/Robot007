@@ -11,6 +11,8 @@ authAxios.interceptors.request.use(
 
   function (error) {
     console.log('Request error: ', error);
+
+    
     return Promise.reject(error);
   },
 );
