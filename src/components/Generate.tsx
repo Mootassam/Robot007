@@ -40,96 +40,102 @@ function Generate() {
         <div className="generate__form">
           <div className="form__group">
             <label htmlFor=""> Choose your best </label>
-            <button  onClick={() => setShowNew(false)}>
+            <button onClick={() => setShowNew(false)}>
               {" "}
               Gnerate New Numbers{" "}
             </button>
-            <button onClick={() => setShowNew(true)}> Upload Exits number</button>
+            <button onClick={() => setShowNew(true)}>
+              {" "}
+              Upload Exits number
+            </button>
           </div>
 
           {shownew && (
             <div className="form__group">
-              <label htmlFor=""> Upload </label>
+              <label htmlFor=""> Upload .csv file</label>
 
               <input type="file" className="upload" />
             </div>
           )}
+
+          {!shownew && (
+            <div className="">
+              <div className="form__group">
+                <label htmlFor="">Phone Number</label>
+                <select name="phonenumber" id="">
+                  <option value="">+85233904796 </option>
+                  <option value="">+85229094204 </option>
+                  <option value="">+85266959270 </option>
+                  <option value="">+85283232526 </option>
+                </select>
+              </div>
+              <div className="form__group">
+                <label htmlFor="">Message</label>
+                <textarea placeholder="Message" />
+              </div>
+              <div className="form__group">
+                <label htmlFor="">Country</label>
+                <Select options={Countries.Allcountries()} />
+              </div>
+              <div className="form__group">
+                <label htmlFor="">Time start</label>
+                <input type="time" />
+              </div>
+              <div className="form__group">
+                <label htmlFor=""> Time end </label>
+                <input type="time" />
+              </div>
+
+              <div className="generate__buttons">
+                <div className="form__group">
+                  <button onClick={generateNumbers} disabled={loading}>
+                    {" "}
+                    {loading ? "Generating..." : "Generate 1000 Numbers"}
+                  </button>
+                </div>
+                <div className="form__group">
+                  <button
+                    className="start"
+                    onClick={saveNumber}
+                    disabled={saveloading}
+                  >
+                    Start
+                  </button>
+                </div>
+                <div className="form__group">
+                  <button className="stop">Stop</button>
+                </div>
+              </div>
+
+              <div className="customer__reply">
+                <div className="section__customer">
+                  <label htmlFor="" className="sub__title">
+                    Customer have WhatsApp
+                  </label>
+                  <div className="spinner__big">
+                    <span>20</span>
+                  </div>
+                </div>
+                <div className="section__customer">
+                  <label htmlFor="" className="sub__title">
+                    Customer Reply
+                  </label>
+                  <div className="spinner__big">
+                    <span>20</span>
+                  </div>
+                </div>
+                <div className="section__customer">
+                  <label htmlFor="" className="sub__title">
+                    Customer have WhatsApp
+                  </label>
+                  <div className="spinner__big">
+                    <span>20</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-
-        {!shownew && <div className="generate__form">
-          <div className="form__group">
-            <label htmlFor="">Phone Number</label>
-            <select name="phonenumber" id="">
-              <option value="">+85233904796 </option>
-              <option value="">+85229094204 </option>
-              <option value="">+85266959270 </option>
-              <option value="">+85283232526 </option>
-            </select>
-          </div>
-          <div className="form__group">
-            <label htmlFor="">Message</label>
-            <textarea placeholder="Message" />
-          </div>
-          <div className="form__group">
-            <label htmlFor="">Country</label>
-            <Select options={Countries.Allcountries()} />
-          </div>
-          <div className="form__group">
-            <label htmlFor="">Time start</label>
-            <input type="time" />
-          </div>
-          <div className="form__group">
-            <label htmlFor=""> Time end </label>
-            <input type="time" />
-          </div>
-
-          <div className="form__group">
-            <button onClick={generateNumbers} disabled={loading}>
-              {" "}
-              {loading ? "Generating..." : "Generate 1000 Numbers"}
-            </button>
-          </div>
-          <div className="form__group">
-            <button
-              className="start"
-              onClick={saveNumber}
-              disabled={saveloading}
-            >
-              Start
-            </button>
-          </div>
-          <div className="form__group">
-            <button className="stop">Stop</button>
-          </div>
-
-          <div className="customer__reply">
-            <div className="section__customer">
-              <label htmlFor="" className="sub__title">
-                Customer have WhatsApp
-              </label>
-              <div className="spinner__big">
-                <span>20</span>
-              </div>
-            </div>
-            <div className="section__customer">
-              <label htmlFor="" className="sub__title">
-                Customer Reply
-              </label>
-              <div className="spinner__big">
-                <span>20</span>
-              </div>
-            </div>
-            <div className="section__customer">
-              <label htmlFor="" className="sub__title">
-                Customer have WhatsApp
-              </label>
-              <div className="spinner__big">
-                <span>20</span>
-              </div>
-            </div>
-          </div>
-        </div>  }
-      
       </div>
 
       <div className="generate__table">

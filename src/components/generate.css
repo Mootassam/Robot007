@@ -180,3 +180,11 @@ span {
   border:0; 
   background-color: #e9e3e3;
  }
+
+ .generate__buttons{ 
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap:10px
+ }
+ 
