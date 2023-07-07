@@ -11,20 +11,26 @@ function Generate() {
   const [saveloading, setsaveLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
 
+
+  const [total ,setTotal]  =useState(0)
   const generateNumbers = async () => {
     setLoading(true);
     const listPhoneNumbers = await axios.get(
-      "http://localhost:8080/api/phone/generate"
+      "http://192.168.10.57:8080/api/phone/generate"
     );
     setNumbers(listPhoneNumbers.data);
     setLoading(false);
   };
 
   const saveNumber = async () => {
+
     try {
-      await axios.post("http://localhost:8080/api/phone/save", {
+      await axios.post("http://192.168.10.57:8080/api/phone/save", {
         users: numbers,
       });
+      generateNumbers()
+      setTotal(total + 1000)
+   
     } catch (error) {
       setLoading(false);
     }
@@ -38,7 +44,7 @@ function Generate() {
     <div className="app__generate">
       <div className="generate">
         <div className="generate__form">
-          <div className="form__group">
+          {/* <div className="form__group">
             <label htmlFor=""> Choose your best </label>
             <button onClick={() => setShowNew(false)}>
               {" "}
@@ -48,15 +54,12 @@ function Generate() {
               {" "}
               Upload Exits number
             </button>
+          </div> */}
+
+          <div className="form__group">
+            <label htmlFor=""> Upload .csv file</label>
+            <input type="file" className="upload" />
           </div>
-
-          {shownew && (
-            <div className="form__group">
-              <label htmlFor=""> Upload .csv file</label>
-
-              <input type="file" className="upload" />
-            </div>
-          )}
 
           {!shownew && (
             <div className="">
@@ -77,61 +80,46 @@ function Generate() {
                 <label htmlFor="">Country</label>
                 <Select options={Countries.Allcountries()} />
               </div>
-              <div className="form__group">
-                <label htmlFor="">Time start</label>
-                <input type="time" />
-              </div>
-              <div className="form__group">
-                <label htmlFor=""> Time end </label>
-                <input type="time" />
-              </div>
 
               <div className="generate__buttons">
                 <div className="form__group">
                   <button onClick={generateNumbers} disabled={loading}>
                     {" "}
-                    {loading ? "Generating..." : "Generate 1000 Numbers"}
+                    {loading ? "Extracting..." : "Extracting 1000 Numbers"}
                   </button>
                 </div>
                 <div className="form__group">
                   <button
                     className="start"
                     onClick={saveNumber}
-                    disabled={saveloading}
+                    disabled={loading}
                   >
                     Start
                   </button>
                 </div>
                 <div className="form__group">
-                  <button className="stop">Stop</button>
+                  <button className="stop">Download (csv)</button>
                 </div>
               </div>
 
               <div className="customer__reply">
-                <div className="section__customer">
-                  <label htmlFor="" className="sub__title">
-                    Customer have WhatsApp
-                  </label>
-                  <div className="spinner__big">
-                    <span>20</span>
-                  </div>
+
+                <div className="reply__group">
+                  <span className="total__text"> Total Numbers : </span>
+                  <span className="total__number">{total}</span>
                 </div>
-                <div className="section__customer">
-                  <label htmlFor="" className="sub__title">
-                    Customer Reply
-                  </label>
-                  <div className="spinner__big">
-                    <span>20</span>
-                  </div>
+
+                <div className="reply__group">
+                  <span className="total__text"> registered number:</span>
+                  <span className="total__number">51</span>
                 </div>
-                <div className="section__customer">
-                  <label htmlFor="" className="sub__title">
-                    Customer have WhatsApp
-                  </label>
-                  <div className="spinner__big">
-                    <span>20</span>
-                  </div>
+
+                <div className="reply__group">
+                  <span  className="total__text"> Number of rejects:</span>
+                  <span className="total__number"> 00 </span>
                 </div>
+
+
               </div>
             </div>
           )}
@@ -145,22 +133,23 @@ function Generate() {
             <table>
               <thead>
                 <tr>
-                  <td className="title">Phone Number</td>
-                  <td className="title"> WhatsApp</td>
-                  <td className="title"> Sent Message</td>
-                  <td className="done">done</td>
+                  <td className="title">S.no</td>
+                  <td className="title">Phone</td>
+
+                  <td className="title"> Message</td>
+                  <td className="done">Status</td>
                 </tr>
               </thead>
 
               <tbody>
                 {numbers?.map((item, index) => (
-                  <tr key={index}>
+                  <tr key={index + 1}>
+                    <td>{index + 1}</td>
                     <td className="phonenumber">{item}</td>
-                    <td> WhatsApp</td>
-                    <td>Sent Message</td>
+                    <td>Message</td>
                     <td className="success">
-                      <div className="spinner"></div>
-                      done
+                      {/* <div className="spinner"></div> */}
+                      Sent
                     </td>
                   </tr>
                 ))}

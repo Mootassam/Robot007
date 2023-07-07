@@ -17,12 +17,19 @@
   flex-direction: column;
   width: 495px;
   gap: 10px;
+  height: calc(100% - 1%);
 }
 
 .form__group {
+  padding-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 4px;
+}
+
+.form__group > label {
+  color: #384f5e;
+  font-size: medium;
 }
 
 input {
@@ -67,7 +74,6 @@ td {
 }
 
 .done {
-
   font-size: large;
   font-weight: 700;
   display: flex;
@@ -76,7 +82,9 @@ td {
 .success {
   display: flex;
   gap: 20px;
-  background-color: aquamarine;
+  background-color: rgb(64, 93, 84);
+  color: white;
+  font-weight: bold;
 }
 
 .title {
@@ -85,13 +93,11 @@ td {
   font-weight: bold;
 }
 
-
 .phonenumber {
   color: #000;
   font-size: large;
   font-weight: bold;
 }
-
 
 /* styling the spinner  */
 
@@ -114,9 +120,7 @@ td {
   }
 }
 
-
 .spinner__big {
-
   margin: auto;
   margin-top: 10px;
   display: grid;
@@ -128,8 +132,8 @@ td {
   cursor: pointer;
 }
 
-.spinner__big:hover { 
-background-color: #384f5e;
+.spinner__big:hover {
+  background-color: #384f5e;
 }
 
 span {
@@ -137,54 +141,68 @@ span {
 }
 
 .start {
-
 }
-.start:hover{
+.start:hover {
   color: white;
   background-color: rgb(108, 171, 15);
- }
+}
 
- .stop:hover{ 
-  background-color: red;
- }
+.stop:hover {
+  background-color: rgb(156, 144, 144);
+  color: white;
+}
 
- select { 
-  padding:8px 20px ;
+select {
+  padding: 8px 20px;
   font-size: 15px;
- }
- select  option { 
+}
+select option {
   padding: 10px;
   background-color: #fff;
   color: #333;
+}
 
- }
-
- .customer__reply {
-  display: flex;
-  gap:13px
- }
-
- .sub__title{ 
+.sub__title {
   font-size: 18px;
   text-align: center;
- }
+}
 
- .section__customer{ 
-  display: flex; 
+.section__customer {
+  display: flex;
   flex-direction: column;
   align-items: center;
- }
+}
 
- .upload{ 
+.upload {
   width: 100%;
-  border:0; 
+  border: 0;
   background-color: #e9e3e3;
- }
+}
 
- .generate__buttons{ 
+.generate__buttons {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap:10px
- }
- 
+  gap: 10px;
+}
+
+.customer__reply {
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px
+}
+
+.total__text{ 
+  font-size: x-large;
+}
+
+.total__number { 
+  font-size: xx-large;
+}
+
+.reply__group { 
+  display: flex;
+  align-items: center;
+  gap: 15px
+}
