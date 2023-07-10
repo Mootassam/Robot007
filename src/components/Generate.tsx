@@ -1,20 +1,32 @@
-import NumberGenerator from "../utils/Number";
 import "./generate.css";
 import Select from "react-select";
 import Countries from "../utils/Countries";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import QRCode from "qrcode.react";
+import io from "socket.io-client";
 
 function Generate() {
-  const [numbers, setNumbers] = useState([""]);
+  const socket = io("http://192.168.10.57:8080"); // Replace with your server URL
+
+  const [numbers, setNumbers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saveloading, setsaveLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
+  const [registered, setregistered] = useState(0);
 
+  const [RegisteredNumber, setregisteredNumber] = useState([]);
+  const [totalNumber, setTotalNumber] = useState([]);
+  const [rejectedNumber, setRejectedNumber] = useState([]);
 
-  const [total ,setTotal]  =useState(0)
+  const [qrcode, setqrcode] = useState("");
+
+  const [total, setTotal] = useState(0);
   const generateNumbers = async () => {
     setLoading(true);
+    setregisteredNumber([]);
+    setTotalNumber([]);
+    setRejectedNumber([]);
     const listPhoneNumbers = await axios.get(
       "http://192.168.10.57:8080/api/phone/generate"
     );
@@ -23,22 +35,33 @@ function Generate() {
   };
 
   const saveNumber = async () => {
-
     try {
-      await axios.post("http://192.168.10.57:8080/api/phone/save", {
-        users: numbers,
-      });
-      generateNumbers()
-      setTotal(total + 1000)
-   
+      await axios
+        .post("http://192.168.10.57:8080/api/phone/save", {
+          users: numbers,
+        })
+        .then((res) => {
+          setregistered(res?.data?.phoneNumberRegistred.length);
+        });
+      setTotal(total + 1000);
     } catch (error) {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    generateNumbers();
-  }, []);
+    // Emit events to the server
+
+    socket.on("data-updated", (data) => {
+      setregisteredNumber(data.phoneNumberRegistred);
+      setTotalNumber(data.totalPhoneNumber);
+      setRejectedNumber(data.phoneNumberRejected);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [registered, RegisteredNumber, totalNumber, rejectedNumber]);
 
   return (
     <div className="app__generate">
@@ -56,26 +79,11 @@ function Generate() {
             </button>
           </div> */}
 
-          <div className="form__group">
-            <label htmlFor=""> Upload .csv file</label>
-            <input type="file" className="upload" />
-          </div>
+
+     
 
           {!shownew && (
             <div className="">
-              <div className="form__group">
-                <label htmlFor="">Phone Number</label>
-                <select name="phonenumber" id="">
-                  <option value="">+85233904796 </option>
-                  <option value="">+85229094204 </option>
-                  <option value="">+85266959270 </option>
-                  <option value="">+85283232526 </option>
-                </select>
-              </div>
-              <div className="form__group">
-                <label htmlFor="">Message</label>
-                <textarea placeholder="Message" />
-              </div>
               <div className="form__group">
                 <label htmlFor="">Country</label>
                 <Select options={Countries.Allcountries()} />
@@ -103,23 +111,22 @@ function Generate() {
               </div>
 
               <div className="customer__reply">
-
                 <div className="reply__group">
                   <span className="total__text"> Total Numbers : </span>
-                  <span className="total__number">{total}</span>
+                  <span className="total__number">{totalNumber.length}</span>
                 </div>
 
                 <div className="reply__group">
                   <span className="total__text"> registered number:</span>
-                  <span className="total__number">51</span>
+                  <span className="total__number">
+                    {RegisteredNumber.length}
+                  </span>
                 </div>
 
                 <div className="reply__group">
-                  <span  className="total__text"> Number of rejects:</span>
-                  <span className="total__number"> 00 </span>
+                  <span className="total__text"> Number of rejects:</span>
+                  <span className="total__number">{rejectedNumber.length}</span>
                 </div>
-
-
               </div>
             </div>
           )}
@@ -142,17 +149,34 @@ function Generate() {
               </thead>
 
               <tbody>
-                {numbers?.map((item, index) => (
-                  <tr key={index + 1}>
-                    <td>{index + 1}</td>
-                    <td className="phonenumber">{item}</td>
-                    <td>Message</td>
-                    <td className="success">
-                      {/* <div className="spinner"></div> */}
-                      Sent
-                    </td>
-                  </tr>
-                ))}
+                {numbers?.map((item, index) => {
+                  return RegisteredNumber.includes(item) ? (
+                    <>
+                      {" "}
+                      <tr key={index + 1}>
+                        <td>{index + 1}</td>
+                        <td className="phonenumber">{item}</td>
+                        <td>Message</td>
+                        <td className="success">
+                          {/* <div className="spinner"></div> */}
+                          OK
+                        </td>
+                      </tr>
+                    </>
+                  ) : (
+                    <>
+                      <tr key={index + 1}>
+                        <td>{index + 1}</td>
+                        <td className="phonenumber">{item}</td>
+                        <td>Message</td>
+                        <td className="error">
+                          {/* <div className="spinner"></div> */}
+                          Wrong
+                        </td>
+                      </tr>
+                    </>
+                  );
+                })}
               </tbody>
             </table>
           </>
