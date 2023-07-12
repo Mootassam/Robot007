@@ -107,22 +107,27 @@ function Generate() {
     return () => {
       socket.disconnect();
     };
-  }, [registered, RegisteredNumber, totalNumber, rejectedNumber, connect ,numbers]);
+  }, [
+    registered,
+    RegisteredNumber,
+    totalNumber,
+    rejectedNumber,
+    connect,
+    numbers,
+  ]);
 
   const downloadcsv = async (data: any) => {
     try {
       const response = await axios.post(
         "http://192.168.10.57:8080/api/phone/download",
         {
-          phoneNumbers: numbers,
+          phoneNumbers: data,
         },
         {
           responseType: "blob", // Set the response type to 'blob' to receive the file as a blob object
         }
       );
-  
       const blob = new Blob([response.data], { type: "text/csv" });
-  
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.setAttribute("download", "downloaded_numbers.csv");
