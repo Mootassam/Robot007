@@ -1,7 +1,7 @@
 import "./generate.css";
 import Select from "react-select";
 import Countries from "../utils/Countries";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import QRCode from "qrcode.react";
 import io from "socket.io-client";
@@ -20,6 +20,12 @@ function Generate() {
   const [rejectedNumber, setRejectedNumber] = useState([]);
 
   const [qrcode, setqrcode] = useState("");
+
+  const [connect, setConnect] = useState(false);
+
+  const [file, setFile] = useState<File | null>(null);
+  const [loadingfile, setLoadingfile] = useState(false);
+  const [result, setResult] = useState(null);
 
   const [total, setTotal] = useState(0);
   const generateNumbers = async () => {
@@ -49,6 +55,38 @@ function Generate() {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files && e.target.files[0];
+    setFile(selectedFile || null);
+  };
+
+  const handleUpload = async () => {
+    setLoadingfile(true);
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("csvFile", file);
+
+      try {
+        const response = await axios.post(
+          "http://192.168.10.57:8080/api/phone/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        setNumbers(response.data.upload);
+      } catch (error) {
+        console.error("Error uploading CSV file:", error);
+      }
+    }
+
+    setLoading(false);
+  };
+
   useEffect(() => {
     // Emit events to the server
 
@@ -58,32 +96,52 @@ function Generate() {
       setRejectedNumber(data.phoneNumberRejected);
     });
 
+    socket.on("scan-qrcode", (data) => {
+      setqrcode(data);
+    });
+
+    socket.on("client-connect", () => {
+      setConnect(true);
+    });
+
     return () => {
       socket.disconnect();
     };
-  }, [registered, RegisteredNumber, totalNumber, rejectedNumber]);
+  }, [registered, RegisteredNumber, totalNumber, rejectedNumber, connect ,numbers]);
+
+  const downloadcsv = async (data: any) => {
+    try {
+      await axios.post("http://192.168.10.57:8080/api/phone/download", {
+        phoneNumbers: data,
+      });
+    } catch (error) {}
+  };
 
   return (
     <div className="app__generate">
       <div className="generate">
         <div className="generate__form">
-          {/* <div className="form__group">
-            <label htmlFor=""> Choose your best </label>
-            <button onClick={() => setShowNew(false)}>
-              {" "}
-              Gnerate New Numbers{" "}
-            </button>
-            <button onClick={() => setShowNew(true)}>
-              {" "}
-              Upload Exits number
-            </button>
-          </div> */}
-
-
-     
+          {qrcode && connect === false && (
+            <div className="qr__abosulte">
+              <QRCode value={qrcode} size={260} />
+            </div>
+          )}
 
           {!shownew && (
             <div className="">
+              <div className="form__group">
+                <label htmlFor=""> Upload file</label>
+
+                <input
+                  type="file"
+                  className="upload__file"
+                  onChange={handleFileChange}
+                />
+                <button onClick={handleUpload} disabled={!file || loading}>
+                  Upload
+                </button>
+              </div>
+
               <div className="form__group">
                 <label htmlFor="">Country</label>
                 <Select options={Countries.Allcountries()} />
@@ -106,7 +164,12 @@ function Generate() {
                   </button>
                 </div>
                 <div className="form__group">
-                  <button className="stop">Download (csv)</button>
+                  <button
+                    className="stop"
+                    onClick={() => downloadcsv(totalNumber)}
+                  >
+                    Download (csv)
+                  </button>
                 </div>
               </div>
 
@@ -121,11 +184,25 @@ function Generate() {
                   <span className="total__number">
                     {RegisteredNumber.length}
                   </span>
+                  <button
+                    className="download__csv"
+                    onClick={() => downloadcsv(RegisteredNumber)}
+                  >
+                    {" "}
+                    download
+                  </button>
                 </div>
 
                 <div className="reply__group">
                   <span className="total__text"> Number of rejects:</span>
                   <span className="total__number">{rejectedNumber.length}</span>
+                  <button
+                    className="download__csv"
+                    onClick={() => downloadcsv(rejectedNumber)}
+                  >
+                    {" "}
+                    download
+                  </button>
                 </div>
               </div>
             </div>
