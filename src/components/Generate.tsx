@@ -40,6 +40,10 @@ function Generate() {
     setLoading(false);
   };
 
+
+  console.log('====================================');
+  console.log(RegisteredNumber);
+  console.log('====================================');
   const saveNumber = async () => {
     try {
       await axios
@@ -139,6 +143,22 @@ function Generate() {
       console.error("Error downloading CSV file:", error);
     }
   };
+  const telegram = async () => {
+    try {
+      await axios
+        .post("http://192.168.10.57:8080/api/phone/telegram", {
+          users: numbers,
+        })
+        .then((res) => {
+          setregistered(res?.data?.phoneNumberRegistred.length);
+        });
+      setTotal(total + 1000);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+
 
   return (
     <div className="app__generate">
@@ -165,10 +185,10 @@ function Generate() {
                 </button>
               </div>
 
-              <div className="form__group">
+              {/* <div className="form__group">
                 <label htmlFor="">Country</label>
                 <Select options={Countries.Allcountries()} />
-              </div>
+              </div> */}
 
               <div className="generate__buttons">
                 <div className="form__group">
@@ -183,15 +203,20 @@ function Generate() {
                     onClick={saveNumber}
                     disabled={loading}
                   >
-                    Start
+                    WhatsApp 
+                    {/* <div className="spinner"></div>  */}
                   </button>
                 </div>
+
                 <div className="form__group">
                   <button
-                    className="stop"
-                    onClick={() => downloadcsv(totalNumber)}
+                    className="telgram"
+                    onClick={telegram}
+                    disabled={loading}
                   >
-                    Download (csv)
+                    Telegram
+
+                    {/* <div className="spinner"></div>  */}
                   </button>
                 </div>
               </div>
@@ -200,11 +225,18 @@ function Generate() {
                 <div className="reply__group">
                   <span className="total__text"> Total Numbers : </span>
                   <span className="total__number">{totalNumber.length}</span>
+                  <button
+                    className="download__csv"
+                    onClick={() => downloadcsv(totalNumber)}
+                  >
+                    {" "}
+                    download
+                  </button>
                 </div>
 
                 <div className="reply__group">
-                  <span className="total__text"> registered number:</span>
-                  <span className="total__number">
+                  <span className="total__text "> registered number:</span>
+                  <span className="total__number __registered">
                     {RegisteredNumber.length}
                   </span>
                   <button
@@ -218,7 +250,9 @@ function Generate() {
 
                 <div className="reply__group">
                   <span className="total__text"> Number of rejects:</span>
-                  <span className="total__number">{rejectedNumber.length}</span>
+                  <span className="total__number ">
+                    {rejectedNumber.length}
+                  </span>
                   <button
                     className="download__csv"
                     onClick={() => downloadcsv(rejectedNumber)}
@@ -243,39 +277,52 @@ function Generate() {
                   <td className="title">S.no</td>
                   <td className="title">Phone</td>
 
-                  <td className="title"> Message</td>
                   <td className="done">Status</td>
                 </tr>
               </thead>
 
               <tbody>
                 {numbers?.map((item, index) => {
-                  return RegisteredNumber.includes(item) ? (
-                    <>
-                      {" "}
-                      <tr key={index + 1}>
-                        <td>{index + 1}</td>
-                        <td className="phonenumber">{item}</td>
-                        <td>Message</td>
-                        <td className="success">
-                          {/* <div className="spinner"></div> */}
-                          OK
-                        </td>
-                      </tr>
-                    </>
-                  ) : (
-                    <>
-                      <tr key={index + 1}>
-                        <td>{index + 1}</td>
-                        <td className="phonenumber">{item}</td>
-                        <td>Message</td>
-                        <td className="error">
-                          {/* <div className="spinner"></div> */}
-                          Wrong
-                        </td>
-                      </tr>
-                    </>
-                  );
+                  if (RegisteredNumber.includes(item)) {
+                    return (
+                      <>
+                        <tr key={index + 1}>
+                          <td>{index + 1}</td>
+                          <td className="phonenumber">{item}</td>
+                          <td className="success">
+                            {/* <div className="spinner"></div> */}
+                            OK
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  } else if (rejectedNumber.includes(item)) {
+                    return (
+                      <>
+                        <tr key={index + 1}>
+                          <td>{index + 1}</td>
+                          <td className="phonenumber">{item}</td>
+                          <td className="error">
+                            {/* <div className="spinner"></div> */}
+                            no
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  } else {
+                    return (
+                      <>
+                        <tr key={index + 1}>
+                          <td>{index + 1}</td>
+                          <td className="phonenumber">{item}</td>
+                          <td className="">
+                            {/* <div className="spinner"></div> */}
+                            __
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  }
                 })}
               </tbody>
             </table>

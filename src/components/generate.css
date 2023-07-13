@@ -150,14 +150,19 @@ td {
 span {
   font-size: 40px;
 }
-
-.start {
+.start,.telgram { 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:20px
 }
+
 .start:hover {
-  color: white;
-  background-color: rgb(108, 171, 15);
+  background-color: rgb(0,159,18)
 }
-
+.telgram:hover { 
+  background-color: #23AAEB;
+}
 .stop:hover {
   background-color: rgb(156, 144, 144);
   color: white;
@@ -213,9 +218,8 @@ select option {
 }
 
 .reply__group {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(3 , 1fr);
 }
 
 .qr__abosulte {
@@ -244,4 +248,12 @@ select option {
 
 .upload__file { 
   background-color: #333;
+}
+
+.__registered{ 
+ background-color: rgb(99, 174, 99);
+ padding: 10px;
+ color: white;
+ font-weight: bold;
+
 }
