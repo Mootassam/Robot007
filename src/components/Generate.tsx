@@ -1,49 +1,39 @@
 import "./generate.css";
-import Select from "react-select";
-import Countries from "../utils/Countries";
+// import Select from "react-select";
+// import Countries from "../utils/Countries";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import QRCode from "qrcode.react";
 import io from "socket.io-client";
+import { useDispatch, useSelector } from "react-redux";
+import { generateNumbers } from "../store/generate/generateActions";
 
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
+import { selectphoneNumbers, selectGenerateLoading } from "../store/generate/generateselectors";
 function Generate() {
   const socket = io("http://192.168.10.57:8080"); // Replace with your server URL
-
-  const [numbers, setNumbers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [saveloading, setsaveLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
   const [registered, setregistered] = useState(0);
-
   const [RegisteredNumber, setregisteredNumber] = useState([]);
   const [totalNumber, setTotalNumber] = useState([]);
   const [rejectedNumber, setRejectedNumber] = useState([]);
-
   const [qrcode, setqrcode] = useState("");
-
   const [connect, setConnect] = useState(false);
-
   const [file, setFile] = useState<File | null>(null);
-  const [loadingfile, setLoadingfile] = useState(false);
-  const [result, setResult] = useState(null);
-
   const [total, setTotal] = useState(0);
-  const generateNumbers = async () => {
-    setLoading(true);
-    setregisteredNumber([]);
-    setTotalNumber([]);
-    setRejectedNumber([]);
-    const listPhoneNumbers = await axios.get(
-      "http://192.168.10.57:8080/api/phone/generate"
-    );
-    setNumbers(listPhoneNumbers.data);
-    setLoading(false);
+  const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
+
+  const generate = () => {
+    dispatch(generateNumbers());
   };
 
+const numbers= useSelector(selectphoneNumbers)
+const generateLoading = useSelector(selectGenerateLoading)
+  
 
-  console.log('====================================');
-  console.log(RegisteredNumber);
-  console.log('====================================');
+
   const saveNumber = async () => {
     try {
       await axios
@@ -65,8 +55,6 @@ function Generate() {
   };
 
   const handleUpload = async () => {
-    setLoadingfile(true);
-
     if (file) {
       const formData = new FormData();
       formData.append("csvFile", file);
@@ -82,7 +70,7 @@ function Generate() {
           }
         );
 
-        setNumbers(response.data.upload);
+        // setNumbers(response.data.upload);
       } catch (error) {
         console.error("Error uploading CSV file:", error);
       }
@@ -143,6 +131,7 @@ function Generate() {
       console.error("Error downloading CSV file:", error);
     }
   };
+
   const telegram = async () => {
     try {
       await axios
@@ -157,8 +146,6 @@ function Generate() {
       setLoading(false);
     }
   };
-
-
 
   return (
     <div className="app__generate">
@@ -192,9 +179,9 @@ function Generate() {
 
               <div className="generate__buttons">
                 <div className="form__group">
-                  <button onClick={generateNumbers} disabled={loading}>
+                  <button onClick={generate} disabled={loading}>
                     {" "}
-                    {loading ? "Extracting..." : "Extracting 1000 Numbers"}
+                    {generateLoading ? "Extracting..." : "Extracting 1000 Numbers"}
                   </button>
                 </div>
                 <div className="form__group">
@@ -203,7 +190,7 @@ function Generate() {
                     onClick={saveNumber}
                     disabled={loading}
                   >
-                    WhatsApp 
+                    WhatsApp
                     {/* <div className="spinner"></div>  */}
                   </button>
                 </div>
@@ -215,7 +202,6 @@ function Generate() {
                     disabled={loading}
                   >
                     Telegram
-
                     {/* <div className="spinner"></div>  */}
                   </button>
                 </div>
