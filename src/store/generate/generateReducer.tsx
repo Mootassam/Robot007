@@ -9,6 +9,7 @@ const generateSlice = createSlice({
     registeredNumber: [],
     rejectNumber: [],
     uploadLoading: [],
+    downloadLoading: false,
   },
   reducers: {
     // generate functions
@@ -36,6 +37,12 @@ const generateSlice = createSlice({
     getFileResutlts: (state, actions) => {
       state.phoneNumbers = actions.payload;
     },
+
+    //download file
+
+    downloadLoading: (state, actions) => {
+      state.downloadLoading = actions.payload;
+    },
   },
 });
 
@@ -45,7 +52,8 @@ export const {
   checkLoading,
   getNumberRegistered,
   fileLoading,
-  getFileResutlts
+  getFileResutlts,
+  downloadLoading
 } = generateSlice.actions;
 
 export default generateSlice.reducer;

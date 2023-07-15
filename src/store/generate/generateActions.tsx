@@ -1,11 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   checkwhatsAppNumber,
+  downloadFile,
   generatePhoneNumbers,
   uploadFile,
 } from "./generateService";
 import {
   checkLoading,
+  downloadLoading,
   fileLoading,
   getFileResutlts,
   getNumberRegistered,
@@ -44,9 +46,6 @@ export const checkWhatsApp = createAsyncThunk<void, string>(
 export const uploadcsv = createAsyncThunk<void, File>(
   "/generate/upload",
   async (file, thunkAPI) => {
-   console.log('====================================');
-   console.log(file);
-   console.log('====================================');
     try {
       thunkAPI.dispatch(fileLoading(true));
       const response = await uploadFile(file);
@@ -54,6 +53,22 @@ export const uploadcsv = createAsyncThunk<void, File>(
       thunkAPI.dispatch(fileLoading(false));
     } catch (error) {
       thunkAPI.dispatch(fileLoading(false));
+    }
+  }
+);
+
+export const download = createAsyncThunk<void, any>(
+  "/generate/download",
+  async (data, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(downloadLoading(true));
+       await downloadFile(data);
+      thunkAPI.dispatch(downloadLoading(false));
+    } catch (error) {
+      thunkAPI.dispatch(downloadLoading(false));
+      console.log("====================================");
+      console.log(error);
+      console.log("====================================");
     }
   }
 );

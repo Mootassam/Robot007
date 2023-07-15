@@ -44,3 +44,27 @@ export const uploadFile = async (file) => {
     return response.data.upload;
   } catch (error) {}
 };
+
+export const downloadFile = async (data) => {
+  try {
+    const response = await axios.post(
+      "http://192.168.10.57:8080/api/phone/download",
+      {
+        phoneNumbers: data,
+      },
+      {
+        responseType: "blob", // Set the response type to 'blob' to receive the file as a blob object
+      }
+    );
+    const blob = new Blob([response.data], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "downloaded_numbers.csv");
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Error downloading CSV file:", error);
+  }
+};

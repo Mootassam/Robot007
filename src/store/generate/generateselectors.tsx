@@ -47,6 +47,13 @@ export const fileLoading = createSelector(
 );
 
 export const fileResults = createSelector(
-  selectGenerateState, 
+  selectGenerateState,
   (generate) => generate.getFileResutlts
-)
+);
+
+// Download the file
+
+export const downloadLoading = createSelector(
+  selectGenerateState,
+  (generate) => generate.downloadLoading
+);

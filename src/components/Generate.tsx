@@ -1,17 +1,14 @@
 import "./generate.css";
-// import Select from "react-select";
-// import Countries from "../utils/Countries";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import QRCode from "qrcode.react";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import {
   checkWhatsApp,
+  download,
   generateNumbers,
   uploadcsv,
 } from "../store/generate/generateActions";
-
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import {
@@ -19,7 +16,10 @@ import {
   selectGenerateLoading,
 } from "../store/generate/generateselectors";
 function Generate() {
-  const socket = io("http://192.168.10.57:8080"); // Replace with your server URL
+  const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
+  const socket = io("http://192.168.10.57:8080"); 
+  
+  // Replace with your server URL
   const [loading, setLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
   const [registered, setregistered] = useState(0);
@@ -29,8 +29,6 @@ function Generate() {
   const [qrcode, setqrcode] = useState("");
   const [connect, setConnect] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [total, setTotal] = useState(0);
-  const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
   const generate = async () => {
     await dispatch(generateNumbers());
   };
@@ -43,38 +41,12 @@ function Generate() {
 
   const handleUpload = async () => {
     if (file) {
-
-           await  dispatch(uploadcsv(file))
+      await dispatch(uploadcsv(file));
     }
-
   };
-
-  // const handleUpload = async () => {
-  //   if (file) {
-  //     const formData = new FormData();
-  //     formData.append("csvFile", file);
-  //     try {
-  //       const response = await axios.post(
-  //         "http://192.168.10.57:8080/api/phone/upload",
-  //         formData,
-  //         {
-  //           headers: {
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       );
-
-  //     } catch (error) {
-  //       console.error("Error uploading CSV file:", error);
-  //     }
-  //   }
-
-  //   setLoading(false);
-  // };
 
   useEffect(() => {
     // Emit events to the server
-
     socket.on("data-updated", (data) => {
       setregisteredNumber(data.phoneNumberRegistred);
       setTotalNumber(data.totalPhoneNumber);
@@ -101,29 +73,9 @@ function Generate() {
     numbers,
   ]);
 
-  const downloadcsv = async (data: any) => {
-    try {
-      const response = await axios.post(
-        "http://192.168.10.57:8080/api/phone/download",
-        {
-          phoneNumbers: data,
-        },
-        {
-          responseType: "blob", // Set the response type to 'blob' to receive the file as a blob object
-        }
-      );
-      const blob = new Blob([response.data], { type: "text/csv" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute("download", "downloaded_numbers.csv");
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error downloading CSV file:", error);
-    }
-  };
+  const downloadcsv  = async (data:any)=> { 
+    dispatch(download(data))
+  }
 
   const checkNumber = async (numbers: string) => {
     await dispatch(checkWhatsApp(numbers));
