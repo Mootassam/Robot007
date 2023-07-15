@@ -6,11 +6,18 @@ import axios from "axios";
 import QRCode from "qrcode.react";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
-import { generateNumbers } from "../store/generate/generateActions";
+import {
+  checkWhatsApp,
+  generateNumbers,
+  uploadcsv,
+} from "../store/generate/generateActions";
 
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
-import { selectphoneNumbers, selectGenerateLoading } from "../store/generate/generateselectors";
+import {
+  selectphoneNumbers,
+  selectGenerateLoading,
+} from "../store/generate/generateselectors";
 function Generate() {
   const socket = io("http://192.168.10.57:8080"); // Replace with your server URL
   const [loading, setLoading] = useState(false);
@@ -24,31 +31,11 @@ function Generate() {
   const [file, setFile] = useState<File | null>(null);
   const [total, setTotal] = useState(0);
   const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
-
-  const generate = () => {
-    dispatch(generateNumbers());
+  const generate = async () => {
+    await dispatch(generateNumbers());
   };
-
-const numbers= useSelector(selectphoneNumbers)
-const generateLoading = useSelector(selectGenerateLoading)
-  
-
-
-  const saveNumber = async () => {
-    try {
-      await axios
-        .post("http://192.168.10.57:8080/api/phone/save", {
-          users: numbers,
-        })
-        .then((res) => {
-          setregistered(res?.data?.phoneNumberRegistred.length);
-        });
-      setTotal(total + 1000);
-    } catch (error) {
-      setLoading(false);
-    }
-  };
-
+  const numbers = useSelector(selectphoneNumbers);
+  const generateLoading = useSelector(selectGenerateLoading);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
     setFile(selectedFile || null);
@@ -56,28 +43,34 @@ const generateLoading = useSelector(selectGenerateLoading)
 
   const handleUpload = async () => {
     if (file) {
-      const formData = new FormData();
-      formData.append("csvFile", file);
 
-      try {
-        const response = await axios.post(
-          "http://192.168.10.57:8080/api/phone/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        // setNumbers(response.data.upload);
-      } catch (error) {
-        console.error("Error uploading CSV file:", error);
-      }
+           await  dispatch(uploadcsv(file))
     }
 
-    setLoading(false);
   };
+
+  // const handleUpload = async () => {
+  //   if (file) {
+  //     const formData = new FormData();
+  //     formData.append("csvFile", file);
+  //     try {
+  //       const response = await axios.post(
+  //         "http://192.168.10.57:8080/api/phone/upload",
+  //         formData,
+  //         {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //       );
+
+  //     } catch (error) {
+  //       console.error("Error uploading CSV file:", error);
+  //     }
+  //   }
+
+  //   setLoading(false);
+  // };
 
   useEffect(() => {
     // Emit events to the server
@@ -132,19 +125,8 @@ const generateLoading = useSelector(selectGenerateLoading)
     }
   };
 
-  const telegram = async () => {
-    try {
-      await axios
-        .post("http://192.168.10.57:8080/api/phone/telegram", {
-          users: numbers,
-        })
-        .then((res) => {
-          setregistered(res?.data?.phoneNumberRegistred.length);
-        });
-      setTotal(total + 1000);
-    } catch (error) {
-      setLoading(false);
-    }
+  const checkNumber = async (numbers: string) => {
+    await dispatch(checkWhatsApp(numbers));
   };
 
   return (
@@ -179,29 +161,19 @@ const generateLoading = useSelector(selectGenerateLoading)
 
               <div className="generate__buttons">
                 <div className="form__group">
-                  <button onClick={generate} disabled={loading}>
-                    {" "}
-                    {generateLoading ? "Extracting..." : "Extracting 1000 Numbers"}
+                  <button onClick={generate} disabled={generateLoading}>
+                    {generateLoading
+                      ? "Extracting..."
+                      : "Extracting 1000 Numbers"}
                   </button>
                 </div>
                 <div className="form__group">
                   <button
                     className="start"
-                    onClick={saveNumber}
+                    onClick={() => checkNumber(numbers)}
                     disabled={loading}
                   >
                     WhatsApp
-                    {/* <div className="spinner"></div>  */}
-                  </button>
-                </div>
-
-                <div className="form__group">
-                  <button
-                    className="telgram"
-                    onClick={telegram}
-                    disabled={loading}
-                  >
-                    Telegram
                     {/* <div className="spinner"></div>  */}
                   </button>
                 </div>
@@ -215,7 +187,6 @@ const generateLoading = useSelector(selectGenerateLoading)
                     className="download__csv"
                     onClick={() => downloadcsv(totalNumber)}
                   >
-                    {" "}
                     download
                   </button>
                 </div>
@@ -229,7 +200,6 @@ const generateLoading = useSelector(selectGenerateLoading)
                     className="download__csv"
                     onClick={() => downloadcsv(RegisteredNumber)}
                   >
-                    {" "}
                     download
                   </button>
                 </div>
@@ -268,7 +238,7 @@ const generateLoading = useSelector(selectGenerateLoading)
               </thead>
 
               <tbody>
-                {numbers?.map((item, index) => {
+                {numbers?.map((item: any, index: number) => {
                   if (RegisteredNumber.includes(item)) {
                     return (
                       <>
