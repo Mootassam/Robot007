@@ -267,3 +267,8 @@ select option {
   justify-content: center;
   gap:26px;
 }
+
+.error {
+  color: red;
+  background-color: #fff;
+}

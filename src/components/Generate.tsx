@@ -20,7 +20,7 @@ import {
 function Generate() {
   const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
   const socket = useMemo(() => io("http://192.168.10.57:8080"), []);
-  
+
   // Replace with your server URL
   const [loading, setLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
@@ -31,17 +31,24 @@ function Generate() {
   const [qrcode, setqrcode] = useState("");
   const [connect, setConnect] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+
+  const [message, setMessage] = useState("");
   const generate = async () => {
     await dispatch(generateNumbers());
   };
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
-  const loadingChek = useSelector(checkLoading)
+  const loadingChek = useSelector(checkLoading);
 
-  const uploadLoading = useSelector(fileLoading)
+  const uploadLoading = useSelector(fileLoading);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
-    setFile(selectedFile || null);
+    if (selectedFile && selectedFile.type === "text/csv") {
+      setFile(selectedFile || null);
+      setMessage("");
+    } else {
+      setMessage("Invalid fiel type. Only CSV files are allowed.");
+    }
   };
   // funciton foer upload
   const handleUpload = async () => {
@@ -76,11 +83,13 @@ function Generate() {
     rejectedNumber,
     connect,
     numbers,
+    file,
+    message,
   ]);
 
-  const downloadcsv  = async (data:any)=> { 
-    dispatch(download(data))
-  }
+  const downloadcsv = async (data: any) => {
+    dispatch(download(data));
+  };
 
   const checkNumber = async (numbers: string) => {
     await dispatch(checkWhatsApp(numbers));
@@ -100,6 +109,7 @@ function Generate() {
             <div className="">
               <div className="form__group">
                 <label htmlFor=""> Upload file</label>
+                <span className="error"> {message}</span>
 
                 <input
                   type="file"
@@ -108,12 +118,15 @@ function Generate() {
                 />
 
                 {/* here the upload function we need to add some styling for the css button  */}
-                <button  className="upload__button" onClick={handleUpload} disabled={!file || uploadLoading}>
+                <button
+                  className="upload__button"
+                  onClick={handleUpload}
+                  disabled={!file || uploadLoading}
+                >
                   Upload
                   {uploadLoading && <div className="spinner"></div>}
                 </button>
               </div>
-
 
               <div className="generate__buttons">
                 <div className="form__group">
@@ -129,8 +142,8 @@ function Generate() {
                     onClick={() => checkNumber(numbers)}
                     disabled={loadingChek}
                   >
-                    WhatsApp
-               {loadingChek && <div className="spinner"></div> }   
+                    Verify WhatsApp
+                    {loadingChek && <div className="spinner"></div>}
                   </button>
                 </div>
               </div>
@@ -194,8 +207,8 @@ function Generate() {
               </thead>
 
               <tbody>
-                {numbers?.map((item: any, index: number) => {
-                  if (RegisteredNumber.includes(item)) {
+                {numbers?.map((item, index) => {
+                  if (RegisteredNumber.includes()) {
                     return (
                       <>
                         <tr key={index + 1}>
