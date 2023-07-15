@@ -159,7 +159,7 @@ span {
 }
 
 .start:hover {
-  background-color: rgb(0, 159, 18);
+  /* background-color: rgb(0, 159, 18); */
 }
 .telgram:hover {
   background-color: #23aaeb;
@@ -247,7 +247,9 @@ select option {
 }
 
 .upload__file {
-  background-color: #333;
+  background-color: rgba(68, 65, 65, 0.814);
+  color: white;
+  font-weight: bold;
 }
 
 .__registered {

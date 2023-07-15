@@ -1,5 +1,5 @@
 import "./generate.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode.react";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +19,7 @@ import {
 } from "../store/generate/generateselectors";
 function Generate() {
   const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
-  const socket = io("http://192.168.10.57:8080"); 
+  const socket = useMemo(() => io("http://192.168.10.57:8080"), []);
   
   // Replace with your server URL
   const [loading, setLoading] = useState(false);
@@ -106,16 +106,14 @@ function Generate() {
                   className="upload__file"
                   onChange={handleFileChange}
                 />
+
+                {/* here the upload function we need to add some styling for the css button  */}
                 <button  className="upload__button" onClick={handleUpload} disabled={!file || uploadLoading}>
                   Upload
                   {uploadLoading && <div className="spinner"></div>}
                 </button>
               </div>
 
-              {/* <div className="form__group">
-                <label htmlFor="">Country</label>
-                <Select options={Countries.Allcountries()} />
-              </div> */}
 
               <div className="generate__buttons">
                 <div className="form__group">
