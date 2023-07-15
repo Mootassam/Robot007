@@ -8,7 +8,7 @@ const generateSlice = createSlice({
     checkLoading: false,
     registeredNumber: [],
     rejectNumber: [],
-    uploadLoading: [],
+    uploadLoading: false,
     downloadLoading: false,
   },
   reducers: {

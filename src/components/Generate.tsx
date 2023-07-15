@@ -14,6 +14,8 @@ import { AnyAction } from "redux";
 import {
   selectphoneNumbers,
   selectGenerateLoading,
+  checkLoading,
+  fileLoading,
 } from "../store/generate/generateselectors";
 function Generate() {
   const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
@@ -34,11 +36,14 @@ function Generate() {
   };
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
+  const loadingChek = useSelector(checkLoading)
+
+  const uploadLoading = useSelector(fileLoading)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
     setFile(selectedFile || null);
   };
-
+  // funciton foer upload
   const handleUpload = async () => {
     if (file) {
       await dispatch(uploadcsv(file));
@@ -101,8 +106,9 @@ function Generate() {
                   className="upload__file"
                   onChange={handleFileChange}
                 />
-                <button onClick={handleUpload} disabled={!file || loading}>
+                <button  className="upload__button" onClick={handleUpload} disabled={!file || uploadLoading}>
                   Upload
+                  {uploadLoading && <div className="spinner"></div>}
                 </button>
               </div>
 
@@ -123,10 +129,10 @@ function Generate() {
                   <button
                     className="start"
                     onClick={() => checkNumber(numbers)}
-                    disabled={loading}
+                    disabled={loadingChek}
                   >
                     WhatsApp
-                    {/* <div className="spinner"></div>  */}
+               {loadingChek && <div className="spinner"></div> }   
                   </button>
                 </div>
               </div>

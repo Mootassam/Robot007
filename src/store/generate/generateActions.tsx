@@ -33,6 +33,7 @@ export const checkWhatsApp = createAsyncThunk<void, string>(
   "generate/checkWhatsApp",
   async (numbers, thunkAPI) => {
     try {
+      thunkAPI.dispatch(checkLoading(true));
       const response = await checkwhatsAppNumber(numbers);
       thunkAPI.dispatch(getNumberRegistered(response));
       thunkAPI.dispatch(checkLoading(false));
