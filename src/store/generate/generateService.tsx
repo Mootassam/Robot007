@@ -3,7 +3,7 @@ import axios from "axios";
 export const generatePhoneNumbers = async () => {
   try {
     const response = await axios.get(
-      "http://192.168.10.57:8080/api/phone/generate"
+      "http://192.168.5.90:8080/api/phone/generate"
     );
     return response.data;
   } catch (error) {
@@ -15,7 +15,7 @@ export const generatePhoneNumbers = async () => {
 export const checkwhatsAppNumber = async (numbers: any) => {
   try {
     const response = await axios.post(
-      "http://192.168.10.57:8080/api/phone/save",
+      "http://192.168.5.90:8080/api/phone/save",
       {
         users: numbers,
       }
@@ -33,7 +33,7 @@ export const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("csvFile", file);
     const response = await axios.post(
-      "http://192.168.10.57:8080/api/phone/upload",
+      "http://192.168.5.90:8080/api/phone/upload",
       formData,
       {
         headers: {
@@ -48,7 +48,7 @@ export const uploadFile = async (file) => {
 export const downloadFile = async (data) => {
   try {
     const response = await axios.post(
-      "http://192.168.10.57:8080/api/phone/download",
+      "http://192.168.5.90:8080/api/phone/download",
       {
         phoneNumbers: data,
       },

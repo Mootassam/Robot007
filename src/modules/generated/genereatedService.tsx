@@ -17,7 +17,7 @@ export default class GenerateService {
   static async checkWhatsApp(numbers: any) {
     try {
       const reponse = await axios.post(
-        "http://192.168.10.57:8080/api/phone/save",
+        "http://192.168.5.90:8080/api/phone/save",
         {
           users: numbers,
         }

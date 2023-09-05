@@ -19,7 +19,7 @@ import {
 } from "../store/generate/generateselectors";
 function Generate() {
   const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
-  const socket = useMemo(() => io("http://192.168.10.57:8080"), []);
+  const socket = useMemo(() => io("http://192.168.5.90:8080"), []);
 
   // Replace with your server URL
   const [loading, setLoading] = useState(false);
@@ -73,6 +73,10 @@ function Generate() {
       setConnect(true);
     });
 
+    socket.on("test__now",(data)=> {
+      console.log(data);
+      
+    })
     return () => {
       socket.disconnect();
     };
@@ -99,7 +103,7 @@ function Generate() {
     <div className="app__generate">
       <div className="generate">
         <div className="generate__form">
-          {qrcode && connect === false && (
+          {qrcode && connect === true && (
             <div className="qr__abosulte">
               <QRCode value={qrcode} size={260} />
             </div>
@@ -208,7 +212,7 @@ function Generate() {
 
               <tbody>
                 {numbers?.map((item, index) => {
-                  if (RegisteredNumber.includes()) {
+                  if (RegisteredNumber.includes(item)) {
                     return (
                       <>
                         <tr key={index + 1}>

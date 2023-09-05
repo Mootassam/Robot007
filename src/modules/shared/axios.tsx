@@ -2,7 +2,7 @@ import Axios from 'axios';
 
 const authAxios = Axios.create({
   // baseURL: 'http://139.162.254.55:8080/api',
-  baseURL: 'http://192.168.10.57:8080/',
+  baseURL: 'http://192.168.5.90:8080/',
   // baseURL: 'https://serverhongkong.onrender.com/api',
 
 });
