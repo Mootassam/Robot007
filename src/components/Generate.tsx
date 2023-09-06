@@ -25,7 +25,15 @@ function Generate() {
   const [loading, setLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
   const [registered, setregistered] = useState(0);
-  const [RegisteredNumber, setregisteredNumber] = useState([]);
+  const [RegisteredNumber, setregisteredNumber] = useState([
+    "85266505053",
+    "85263769808",
+    "85261026594",
+    "85292340433",
+    "85293469748",
+    "85294331900",
+    "85293005092",
+  ]);
   const [totalNumber, setTotalNumber] = useState([]);
   const [rejectedNumber, setRejectedNumber] = useState([]);
   const [qrcode, setqrcode] = useState("");
@@ -39,7 +47,6 @@ function Generate() {
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
   const loadingChek = useSelector(checkLoading);
-
   const uploadLoading = useSelector(fileLoading);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
@@ -59,13 +66,9 @@ function Generate() {
 
   useEffect(() => {
     // Emit events to the server
-    socket.on("data-updated", (data) => {
-      setregisteredNumber(data.phoneNumberRegistred);
-      setTotalNumber(data.totalPhoneNumber);
-      setRejectedNumber(data.phoneNumberRejected);
-    });
 
     socket.on("scan-qrcode", (data) => {
+      console.log(data);
       setqrcode(data);
     });
 
@@ -73,23 +76,19 @@ function Generate() {
       setConnect(true);
     });
 
-    socket.on("test__now",(data)=> {
-      console.log(data);
-      
-    })
     return () => {
       socket.disconnect();
     };
-  }, [
-    registered,
-    RegisteredNumber,
-    totalNumber,
-    rejectedNumber,
-    connect,
-    numbers,
-    file,
-    message,
-  ]);
+  }, [rejectedNumber, connect, numbers, file, message, qrcode]);
+
+  useEffect(() => {
+    socket.on("data-updated", (data) => {
+      console.log("emit data", data.phoneNumberRegistred);
+      setregisteredNumber(data.phoneNumberRegistred);
+      setTotalNumber(data.totalPhoneNumber);
+      setRejectedNumber(data.phoneNumberRejected);
+    });
+  }, [registered, totalNumber, rejectedNumber, RegisteredNumber]);
 
   const downloadcsv = async (data: any) => {
     dispatch(download(data));
@@ -103,7 +102,7 @@ function Generate() {
     <div className="app__generate">
       <div className="generate">
         <div className="generate__form">
-          {qrcode && connect === true && (
+          {qrcode && (
             <div className="qr__abosulte">
               <QRCode value={qrcode} size={260} />
             </div>

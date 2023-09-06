@@ -34,7 +34,7 @@ const generateSlice = createSlice({
       state.uploadLoading = actions.payload;
     },
 
-    getFileResutlts: (state, actions) => {
+    getFileResutlts: (state, actions) => {   
       state.phoneNumbers = actions.payload;
     },
 

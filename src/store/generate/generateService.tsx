@@ -41,7 +41,8 @@ export const uploadFile = async (file) => {
         },
       }
     );
-    return response.data.upload;
+    
+    return response.data.data;
   } catch (error) {}
 };
 
