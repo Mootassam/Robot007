@@ -19,20 +19,12 @@ import {
 } from "../store/generate/generateselectors";
 function Generate() {
   const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
-  const socket = useMemo(() => io("http://192.168.5.90:8080"), []);
 
   // Replace with your server URL
   const [loading, setLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
   const [registered, setregistered] = useState(0);
   const [RegisteredNumber, setregisteredNumber] = useState([
-    "85266505053",
-    "85263769808",
-    "85261026594",
-    "85292340433",
-    "85293469748",
-    "85294331900",
-    "85293005092",
   ]);
   const [totalNumber, setTotalNumber] = useState([]);
   const [rejectedNumber, setRejectedNumber] = useState([]);
@@ -65,7 +57,11 @@ function Generate() {
   };
 
   useEffect(() => {
+    const socket = io("http://192.168.70.133:8080");
     // Emit events to the server
+    socket.on("send", (data) => {
+      console.log(data);
+    });
 
     socket.on("scan-qrcode", (data) => {
       console.log(data);
@@ -75,20 +71,17 @@ function Generate() {
     socket.on("client-connect", () => {
       setConnect(true);
     });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [rejectedNumber, connect, numbers, file, message, qrcode]);
-
-  useEffect(() => {
     socket.on("data-updated", (data) => {
       console.log("emit data", data.phoneNumberRegistred);
       setregisteredNumber(data.phoneNumberRegistred);
       setTotalNumber(data.totalPhoneNumber);
       setRejectedNumber(data.phoneNumberRejected);
     });
-  }, [registered, totalNumber, rejectedNumber, RegisteredNumber]);
+    return () => {
+      socket.disconnect();
+    };
+  }, [rejectedNumber,RegisteredNumber,registered,totalNumber, connect, numbers, file, message, qrcode]);
+
 
   const downloadcsv = async (data: any) => {
     dispatch(download(data));

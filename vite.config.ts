@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     port: 80, // Specify the port number you want to use
     strictPort: true, // Enable strict port checking
-    host: '192.168.5.90', // Specify the hostname
+    host: '192.168.70.133', // Specify the hostname
     open: true, // Automatically open the browser
   },
 })
