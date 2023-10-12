@@ -3,6 +3,7 @@ import {
   checkwhatsAppNumber,
   downloadFile,
   generatePhoneNumbers,
+  sendwhatsAppMessage,
   uploadFile,
 } from "./generateService";
 import {
@@ -13,6 +14,7 @@ import {
   getNumberRegistered,
   getNumbers,
   setgenerateLoading,
+  loadingMessage,
 } from "./generateReducer";
 export const generateNumbers = createAsyncThunk<void, string>(
   "generate/generateNumbers",
@@ -43,6 +45,19 @@ export const checkWhatsApp = createAsyncThunk<void, string>(
     }
   }
 );
+
+export const sendMessage = createAsyncThunk<
+  void,
+  { messages: string; phoneNumbers: String[] }
+>("generate/sendMessage", async ({ messages, phoneNumbers }, thunkAPI) => {
+  try {
+    thunkAPI.dispatch(loadingMessage(false));
+    await sendwhatsAppMessage(messages, phoneNumbers);
+    thunkAPI.dispatch(loadingMessage(true));
+  } catch (error) {
+    thunkAPI.dispatch(loadingMessage(false));
+  }
+});
 
 export const uploadcsv = createAsyncThunk<void, File>(
   "/generate/upload",

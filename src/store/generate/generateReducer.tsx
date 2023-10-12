@@ -10,8 +10,17 @@ const generateSlice = createSlice({
     rejectNumber: [],
     uploadLoading: false,
     downloadLoading: false,
+    loadingMessage: false,
+    msg: "",
   },
   reducers: {
+    //send Message
+    sendMessage: (state, actions) => {
+      state.msg = actions.payload;
+    },
+    loadingMessage: (state, actions) => {
+      state.generateLoading = actions.payload;
+    },
     // generate functions
     getNumbers: (state, actions) => {
       state.phoneNumbers = actions.payload;
@@ -34,7 +43,7 @@ const generateSlice = createSlice({
       state.uploadLoading = actions.payload;
     },
 
-    getFileResutlts: (state, actions) => {   
+    getFileResutlts: (state, actions) => {
       state.phoneNumbers = actions.payload;
     },
 
@@ -53,7 +62,8 @@ export const {
   getNumberRegistered,
   fileLoading,
   getFileResutlts,
-  downloadLoading
+  downloadLoading,
+  loadingMessage,
 } = generateSlice.actions;
 
 export default generateSlice.reducer;

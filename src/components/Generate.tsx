@@ -7,6 +7,7 @@ import {
   checkWhatsApp,
   download,
   generateNumbers,
+  sendMessage,
   uploadcsv,
 } from "../store/generate/generateActions";
 import { ThunkDispatch } from "redux-thunk";
@@ -27,13 +28,14 @@ function Generate() {
   const [loading, setLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
   const [registered, setregistered] = useState(0);
-  const [RegisteredNumber, setregisteredNumber] = useState([]);
+  const [RegisteredNumber, setregisteredNumber] = useState(["9185231465210"]);
   const [totalNumber, setTotalNumber] = useState([]);
   const [rejectedNumber, setRejectedNumber] = useState([]);
   const [qrcode, setqrcode] = useState("");
   const [connect, setConnect] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
+  const [msg, setMsg] = useState("");
   const [country, setCountry] = useState("HK");
 
   const numbers = useSelector(selectphoneNumbers);
@@ -104,6 +106,16 @@ function Generate() {
     await dispatch(checkWhatsApp(numbers));
   };
 
+  const typeMessage = (event) => {
+    setMsg(event.target.value);
+    console.log(event.target.value);
+  };
+  const submit = async () => {
+    await dispatch(
+      sendMessage({ messages: msg, phoneNumbers: RegisteredNumber })
+    );
+  };
+
   const options = countries;
 
   return (
@@ -142,7 +154,11 @@ function Generate() {
               <div className="select__country">
                 <label htmlFor="country">Country</label>
 
-                <Select value={country} onChange={setCountry}  options={options} />
+                <Select
+                  value={country}
+                  onChange={setCountry}
+                  options={options}
+                />
                 {/* <select name="" id="" onChange={handleCountryChange}>
                   <option value="HK"> Hong kong</option>
                   <option value="IN"> India</option>
@@ -203,7 +219,6 @@ function Generate() {
                     className="download__csv"
                     onClick={() => downloadcsv(rejectedNumber)}
                   >
-                    {" "}
                     download
                   </button>
                 </div>
@@ -213,12 +228,13 @@ function Generate() {
                 <span className="total__text "> Message: </span>
                 <textarea
                   className="message__textarea"
-                  name=""
-                  id=""
                   cols={50}
                   rows={40}
+                  onChange={() => typeMessage(event)}
                 />
-                <button className="message__button">Send</button>
+                <button className="message__button" onClick={() => submit()}>
+                  Send
+                </button>
               </div>
             </div>
           )}

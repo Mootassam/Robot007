@@ -29,6 +29,20 @@ export const checkwhatsAppNumber = async (numbers: any) => {
   }
 };
 
+export const sendwhatsAppMessage = async (message: any, phoneNumbers: any) => {
+  try {
+    const response = await axios.post(
+      "http://192.168.70.133:8080/api/phone/message",
+      { message: message, phoneNumbers: phoneNumbers }
+    );
+    return response.data;
+  } catch (error) {
+    console.log("====================================");
+    console.log(error);
+    console.log("====================================");
+  }
+};
+
 export const uploadFile = async (file) => {
   try {
     const formData = new FormData();
