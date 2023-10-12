@@ -14,12 +14,12 @@ import {
   getNumbers,
   setgenerateLoading,
 } from "./generateReducer";
-export const generateNumbers = createAsyncThunk(
+export const generateNumbers = createAsyncThunk<void, string>(
   "generate/generateNumbers",
-  async (_, thunkAPI) => {
+  async (country, thunkAPI) => {
     try {
       thunkAPI.dispatch(setgenerateLoading(true));
-      const phoneNumbers = await generatePhoneNumbers();
+      const phoneNumbers = await generatePhoneNumbers(country);
       thunkAPI.dispatch(getNumbers(phoneNumbers));
       thunkAPI.dispatch(setgenerateLoading(false));
     } catch (error) {
@@ -63,7 +63,7 @@ export const download = createAsyncThunk<void, any>(
   async (data, thunkAPI) => {
     try {
       thunkAPI.dispatch(downloadLoading(true));
-       await downloadFile(data);
+      await downloadFile(data);
       thunkAPI.dispatch(downloadLoading(false));
     } catch (error) {
       thunkAPI.dispatch(downloadLoading(false));

@@ -30,15 +30,18 @@ function Generate() {
   const [qrcode, setqrcode] = useState("");
   const [connect, setConnect] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-
   const [message, setMessage] = useState("");
-  const generate = async () => {
-    await dispatch(generateNumbers());
+  const [contry, setCoutry] = useState("HK");
+  const handleCountryChange = (event) => {
+    const selectedCountry = event.target.value;
+    setCoutry(selectedCountry);
+    console.log("Selected country:", selectedCountry);
   };
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
   const loadingChek = useSelector(checkLoading);
   const uploadLoading = useSelector(fileLoading);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
     if (selectedFile && selectedFile.type === "text/csv") {
@@ -89,12 +92,15 @@ function Generate() {
     file,
     message,
     qrcode,
+    contry,
   ]);
 
+  const generate = async () => {
+    await dispatch(generateNumbers(contry));
+  };
   const downloadcsv = async (data: any) => {
     dispatch(download(data));
   };
-
   const checkNumber = async (numbers: string) => {
     await dispatch(checkWhatsApp(numbers));
   };
@@ -132,9 +138,17 @@ function Generate() {
                 </button>
               </div>
 
+              <div className="select__country">
+                <label htmlFor="country">Country</label>
+                <select name="" id="" onChange={handleCountryChange}>
+                  <option value="HK"> Hong kong</option>
+                  <option value="IN"> India</option>
+                </select>
+              </div>
+
               <div className="generate__buttons">
                 <div className="form__group">
-                  <button onClick={generate} disabled={generateLoading}>
+                  <button onClick={() => generate()} disabled={generateLoading}>
                     {generateLoading
                       ? "Extracting..."
                       : "Extracting 1000 Numbers"}

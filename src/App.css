@@ -14,3 +14,10 @@ h1 {
   margin-top: 10px;
   font-size: 20px;
 }
+
+.select__country {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+}

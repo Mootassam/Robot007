@@ -1,9 +1,10 @@
 import axios from "axios";
 
-export const generatePhoneNumbers = async () => {
+export const generatePhoneNumbers = async (country: any) => {
   try {
-    const response = await axios.get(
-      "http://192.168.70.133:8080/api/phone/generate"
+    const response = await axios.post(
+      "http://192.168.70.133:8080/api/phone/generate",
+      { country: country }
     );
     return response.data;
   } catch (error) {
@@ -41,7 +42,7 @@ export const uploadFile = async (file) => {
         },
       }
     );
-    
+
     return response.data.data;
   } catch (error) {}
 };
