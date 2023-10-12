@@ -110,6 +110,8 @@ function Generate() {
     setMsg(event.target.value);
     console.log(event.target.value);
   };
+
+  // im the console //
   const submit = async () => {
     await dispatch(
       sendMessage({ messages: msg, phoneNumbers: RegisteredNumber })
