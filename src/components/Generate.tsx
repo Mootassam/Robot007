@@ -24,8 +24,7 @@ function Generate() {
   const [loading, setLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
   const [registered, setregistered] = useState(0);
-  const [RegisteredNumber, setregisteredNumber] = useState([
-  ]);
+  const [RegisteredNumber, setregisteredNumber] = useState([]);
   const [totalNumber, setTotalNumber] = useState([]);
   const [rejectedNumber, setRejectedNumber] = useState([]);
   const [qrcode, setqrcode] = useState("");
@@ -80,8 +79,17 @@ function Generate() {
     return () => {
       socket.disconnect();
     };
-  }, [rejectedNumber,RegisteredNumber,registered,totalNumber, connect, numbers, file, message, qrcode]);
-
+  }, [
+    rejectedNumber,
+    RegisteredNumber,
+    registered,
+    totalNumber,
+    connect,
+    numbers,
+    file,
+    message,
+    qrcode,
+  ]);
 
   const downloadcsv = async (data: any) => {
     dispatch(download(data));
@@ -146,18 +154,18 @@ function Generate() {
 
               <div className="customer__reply">
                 <div className="reply__group">
-                  <span className="total__text"> Total Numbers : </span>
+                  <span className="total__text"> Total : </span>
                   <span className="total__number">{totalNumber.length}</span>
                   <button
                     className="download__csv"
                     onClick={() => downloadcsv(totalNumber)}
                   >
-                    download
+                    Download
                   </button>
                 </div>
 
                 <div className="reply__group">
-                  <span className="total__text "> registered number:</span>
+                  <span className="total__text ">Registered :</span>
                   <span className="total__number __registered">
                     {RegisteredNumber.length}
                   </span>
@@ -170,7 +178,7 @@ function Generate() {
                 </div>
 
                 <div className="reply__group">
-                  <span className="total__text"> Number of rejects:</span>
+                  <span className="total__text"> Rejects:</span>
                   <span className="total__number ">
                     {rejectedNumber.length}
                   </span>
@@ -182,6 +190,18 @@ function Generate() {
                     download
                   </button>
                 </div>
+              </div>
+
+              <div className="send__message">
+                <span className="total__text "> Message: </span>
+                <textarea
+                  className="message__textarea"
+                  name=""
+                  id=""
+                  cols={50}
+                  rows={40}
+                />
+                <button className="message__button">Send</button>
               </div>
             </div>
           )}
