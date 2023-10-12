@@ -17,6 +17,9 @@ import {
   checkLoading,
   fileLoading,
 } from "../store/generate/generateselectors";
+import Select from "react-select";
+import countries from "../utils/Countries";
+
 function Generate() {
   const dispatch: ThunkDispatch<any, void, AnyAction> = useDispatch();
 
@@ -31,12 +34,8 @@ function Generate() {
   const [connect, setConnect] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
-  const [contry, setCoutry] = useState("HK");
-  const handleCountryChange = (event) => {
-    const selectedCountry = event.target.value;
-    setCoutry(selectedCountry);
-    console.log("Selected country:", selectedCountry);
-  };
+  const [country, setCountry] = useState("HK");
+
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
   const loadingChek = useSelector(checkLoading);
@@ -92,11 +91,11 @@ function Generate() {
     file,
     message,
     qrcode,
-    contry,
+    country,
   ]);
 
   const generate = async () => {
-    await dispatch(generateNumbers(contry));
+    await dispatch(generateNumbers(country));
   };
   const downloadcsv = async (data: any) => {
     dispatch(download(data));
@@ -104,6 +103,8 @@ function Generate() {
   const checkNumber = async (numbers: string) => {
     await dispatch(checkWhatsApp(numbers));
   };
+
+  const options = countries;
 
   return (
     <div className="app__generate">
@@ -140,10 +141,12 @@ function Generate() {
 
               <div className="select__country">
                 <label htmlFor="country">Country</label>
-                <select name="" id="" onChange={handleCountryChange}>
+
+                <Select value={country} onChange={setCountry}  options={options} />
+                {/* <select name="" id="" onChange={handleCountryChange}>
                   <option value="HK"> Hong kong</option>
                   <option value="IN"> India</option>
-                </select>
+                </select> */}
               </div>
 
               <div className="generate__buttons">
