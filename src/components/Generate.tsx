@@ -28,7 +28,7 @@ function Generate() {
   const [loading, setLoading] = useState(false);
   const [shownew, setShowNew] = useState(false);
   const [registered, setregistered] = useState(0);
-  const [RegisteredNumber, setregisteredNumber] = useState(["9185231465210"]);
+  const [RegisteredNumber, setregisteredNumber] = useState([]);
   const [totalNumber, setTotalNumber] = useState([]);
   const [rejectedNumber, setRejectedNumber] = useState([]);
   const [qrcode, setqrcode] = useState("");
@@ -60,7 +60,7 @@ function Generate() {
   };
 
   useEffect(() => {
-    const socket = io("http://192.168.70.133:8080");
+    const socket = io("http://192.168.100.100:8080");
     // Emit events to the server
     socket.on("send", (data) => {
       console.log(data);
@@ -124,7 +124,7 @@ function Generate() {
     <div className="app__generate">
       <div className="generate">
         <div className="generate__form">
-          {qrcode && (
+          {qrcode && !connect && (
             <div className="qr__abosulte">
               <QRCode value={qrcode} size={260} />
             </div>
@@ -223,6 +223,13 @@ function Generate() {
                   >
                     download
                   </button>
+                </div>
+
+                <div className="reply__group">
+                  <span className="total__text"> Replies:</span>
+                  <span className="total__number pink">
+                    {rejectedNumber.length}
+                  </span>
                 </div>
               </div>
 

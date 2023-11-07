@@ -12,7 +12,7 @@
   margin-top: 20px;
   padding: 20px;
   margin-left: 20px;
-  background-color: hsl(208, 100%, 97%, 0.7);
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   width: 495px;
@@ -57,7 +57,7 @@ label {
   margin-top: 20px;
   width: 100%;
   padding: 20px;
-  background-color: hsl(208, 100%, 97%, 0.7);
+  background-color: #fff;
   height: 95dvh;
   overflow-y: scroll;
 }
@@ -70,7 +70,7 @@ table {
 
 td {
   padding: 10px;
-  border: 1px solid #fff;
+  border: 1px solid #000;
 }
 
 .done {
@@ -204,7 +204,7 @@ select option {
 }
 
 .customer__reply {
-  padding-top: 60px;
+  padding-top: 34px;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -212,6 +212,11 @@ select option {
 
 .total__text {
   font-size: x-large;
+}
+.pink {
+  background-color: blueviolet;
+  color: white;
+  padding: 10px 10px;
 }
 
 .total__number {
@@ -223,8 +228,6 @@ select option {
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
 }
-
-
 
 .qr__abosulte {
   position: absolute;
@@ -262,13 +265,11 @@ select option {
   font-weight: bold;
 }
 
-
-
-.upload__button  {
+.upload__button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap:26px;
+  gap: 26px;
 }
 
 .error {

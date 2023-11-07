@@ -19,7 +19,7 @@ const generateSlice = createSlice({
       state.msg = actions.payload;
     },
     loadingMessage: (state, actions) => {
-      state.generateLoading = actions.payload;
+      state.loadingMessage = actions.payload;
     },
     // generate functions
     getNumbers: (state, actions) => {
