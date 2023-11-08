@@ -21,3 +21,50 @@ h1 {
   gap: 10px;
   padding-top: 10px;
 }
+
+.minute {
+  width: 100%;
+  padding: 15px;
+  font-size: 15px;
+}
+
+.stop__message {
+  background-color: red;
+  width: 100%;
+  color: white;
+  font-weight: 400;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  align-items: flex-end;
+  justify-content: flex-end;
+  inline-size: 100%;
+}
+
+.generate__server {
+  position: fixed;
+  inset-inline-end: 20px;
+  inset-block-end: 20px;
+  padding: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.__on {
+  background-color: rgb(0, 255, 68);
+  font-size: 60px;
+  color: white;
+}
+.__off {
+  background-color: rgb(255, 60, 0);
+  font-size: 60px;
+  color: white;
+}
+label {
+  cursor: pointer;
+}

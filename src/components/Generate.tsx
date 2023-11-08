@@ -37,6 +37,7 @@ function Generate() {
   const [message, setMessage] = useState("");
   const [msg, setMsg] = useState("");
   const [country, setCountry] = useState("HK");
+  const [minute, setMinute] = useState("");
 
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
@@ -60,15 +61,23 @@ function Generate() {
   };
 
   useEffect(() => {
-    const socket = io("http://192.168.100.100:8080");
+    const socket = io("http://192.168.90.76:8080");
     // Emit events to the server
     socket.on("send", (data) => {
       console.log(data);
     });
 
+    socket.on("sent__number", (data: any) => {
+      console.log("Message successfully sent to", data);
+    });
+
     socket.on("scan-qrcode", (data) => {
       console.log(data);
       setqrcode(data);
+    });
+
+    socket.on("done", () => {
+      console.log("done");
     });
 
     socket.on("client-connect", () => {
@@ -119,14 +128,18 @@ function Generate() {
   };
 
   const options = countries;
-
+  const close = () => {};
   return (
     <div className="app__generate">
       <div className="generate">
         <div className="generate__form">
           {qrcode && !connect && (
             <div className="qr__abosulte">
+              <div className="close" onClick={() => close()}>
+                X
+              </div>
               <QRCode value={qrcode} size={260} />
+              <label> Scan Qrcode</label>
             </div>
           )}
 
@@ -191,12 +204,20 @@ function Generate() {
                 <div className="reply__group">
                   <span className="total__text"> Total : </span>
                   <span className="total__number">{totalNumber.length}</span>
-                  <button
-                    className="download__csv"
-                    onClick={() => downloadcsv(totalNumber)}
-                  >
-                    Download
-                  </button>
+                  <div className="actions">
+                    <button
+                      className="download__csv"
+                      onClick={() => downloadcsv(RegisteredNumber)}
+                    >
+                      <i className="fa-solid fa-download"></i>
+                    </button>
+                    <button
+                      className="download__csv"
+                      onClick={() => downloadcsv(RegisteredNumber)}
+                    >
+                      <i className="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="reply__group">
@@ -204,12 +225,20 @@ function Generate() {
                   <span className="total__number __registered">
                     {RegisteredNumber.length}
                   </span>
-                  <button
-                    className="download__csv"
-                    onClick={() => downloadcsv(RegisteredNumber)}
-                  >
-                    download
-                  </button>
+                  <div className="actions">
+                    <button
+                      className="download__csv"
+                      onClick={() => downloadcsv(RegisteredNumber)}
+                    >
+                      <i className="fa-solid fa-download"></i>
+                    </button>
+                    <button
+                      className="download__csv"
+                      onClick={() => downloadcsv(RegisteredNumber)}
+                    >
+                      <i className="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="reply__group">
@@ -217,12 +246,20 @@ function Generate() {
                   <span className="total__number ">
                     {rejectedNumber.length}
                   </span>
-                  <button
-                    className="download__csv"
-                    onClick={() => downloadcsv(rejectedNumber)}
-                  >
-                    download
-                  </button>
+                  <div className="actions">
+                    <button
+                      className="download__csv"
+                      onClick={() => downloadcsv(rejectedNumber)}
+                    >
+                      <i className="fa-solid fa-download"></i>
+                    </button>
+                    <button
+                      className="download__csv"
+                      onClick={() => downloadcsv(rejectedNumber)}
+                    >
+                      <i className="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="reply__group">
@@ -234,16 +271,30 @@ function Generate() {
               </div>
 
               <div className="send__message">
-                <span className="total__text "> Message: </span>
-                <textarea
-                  className="message__textarea"
-                  cols={50}
-                  rows={40}
-                  onChange={() => typeMessage(event)}
-                />
+                <div>
+                  <span className="total__text ">Message:</span>
+                  <span>
+                    <input
+                      type="text"
+                      placeholder="please select schedule time between message"
+                      className="minute"
+                      maxLength={1}
+                      onChange={(e) => setMinute(e.target.value)}
+                    />
+                  </span>
+                  <textarea
+                    className="message__textarea"
+                    cols={50}
+                    rows={40}
+                    onChange={() => typeMessage(event)}
+                  />
+                </div>
+
                 <button className="message__button" onClick={() => submit()}>
                   Send
                 </button>
+
+                <button className="stop__message"> STOP</button>
               </div>
             </div>
           )}
@@ -259,8 +310,8 @@ function Generate() {
                 <tr>
                   <td className="title">S.no</td>
                   <td className="title">Phone</td>
-
-                  <td className="done">Status</td>
+                  <td className="">Status</td>
+                  <td className="">Message Sent (100/100)</td>
                 </tr>
               </thead>
 
@@ -302,6 +353,7 @@ function Generate() {
                             {/* <div className="spinner"></div> */}
                             __
                           </td>
+                          <td></td>
                         </tr>
                       </>
                     );
@@ -311,6 +363,13 @@ function Generate() {
             </table>
           </>
         )}
+      </div>
+
+      <div className="generate__server __on">
+        <label htmlFor="">on</label>
+      </div>
+      <div className="generate__server __off">
+        <label htmlFor="">off</label>
       </div>
     </div>
   );

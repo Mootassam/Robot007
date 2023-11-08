@@ -243,17 +243,34 @@ select option {
   width: 600px;
   height: 450px;
   border-radius: 20px;
+  border: 5px solid #000;
+}
+.close {
+  position: absolute;
+  top: 15px;
+  background-color: red;
+  padding: 7px 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+label {
+  font-size: 25px;
+}
+input {
+  padding: 10px 20px;
 }
 
 .download__csv {
-  margin-left: 60px;
   font-size: 14px;
   font-weight: bold;
   border: 0;
 }
 
 .upload__file {
-  background-color: rgba(68, 65, 65, 0.814);
+  background-color: rgb(48 119 162 / 81%);
   color: white;
   font-weight: bold;
 }
@@ -276,3 +293,4 @@ select option {
   color: red;
   background-color: #fff;
 }
+
