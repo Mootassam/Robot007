@@ -38,7 +38,7 @@ function Generate() {
   const [msg, setMsg] = useState("");
   const [country, setCountry] = useState("HK");
   const [minute, setMinute] = useState("");
-
+  const [done, setDone] = useState(false);
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
   const loadingChek = useSelector(checkLoading);
@@ -61,7 +61,7 @@ function Generate() {
   };
 
   useEffect(() => {
-    const socket = io("http://192.168.90.76:8080");
+    const socket = io("http://192.168.3.16:8080");
     // Emit events to the server
     socket.on("send", (data) => {
       console.log(data);
@@ -77,7 +77,7 @@ function Generate() {
     });
 
     socket.on("done", () => {
-      console.log("done");
+      setDone(true);
     });
 
     socket.on("client-connect", () => {
@@ -103,6 +103,7 @@ function Generate() {
     message,
     qrcode,
     country,
+    done,
   ]);
 
   const generate = async () => {
@@ -135,9 +136,6 @@ function Generate() {
         <div className="generate__form">
           {qrcode && !connect && (
             <div className="qr__abosulte">
-              <div className="close" onClick={() => close()}>
-                X
-              </div>
               <QRCode value={qrcode} size={260} />
               <label> Scan Qrcode</label>
             </div>
@@ -272,7 +270,9 @@ function Generate() {
 
               <div className="send__message">
                 <div>
-                  <span className="total__text ">Message:</span>
+                  <span className="total__text ">
+                    Message:{done && <label className="done__">Done</label>}
+                  </span>
                   <span>
                     <input
                       type="text"
@@ -327,6 +327,7 @@ function Generate() {
                             {/* <div className="spinner"></div> */}
                             OK
                           </td>
+                          <td></td>
                         </tr>
                       </>
                     );
@@ -340,6 +341,7 @@ function Generate() {
                             {/* <div className="spinner"></div> */}
                             no
                           </td>
+                          <td></td>
                         </tr>
                       </>
                     );
@@ -364,13 +366,15 @@ function Generate() {
           </>
         )}
       </div>
-
-      <div className="generate__server __on">
-        <label htmlFor="">on</label>
-      </div>
-      <div className="generate__server __off">
-        <label htmlFor="">off</label>
-      </div>
+      {connect ? (
+        <div className="generate__server __on">
+          <label htmlFor="">on</label>
+        </div>
+      ) : (
+        <div className="generate__server __off">
+          <label htmlFor="">off</label>
+        </div>
+      )}
     </div>
   );
 }
