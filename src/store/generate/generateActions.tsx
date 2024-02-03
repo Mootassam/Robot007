@@ -16,12 +16,12 @@ import {
   setgenerateLoading,
   loadingMessage,
 } from "./generateReducer";
-export const generateNumbers = createAsyncThunk<void, string>(
+export const generateNumbers = createAsyncThunk<void, any>(
   "generate/generateNumbers",
-  async (country, thunkAPI) => {
+  async ({ country, match }, thunkAPI) => {
     try {
       thunkAPI.dispatch(setgenerateLoading(true));
-      const phoneNumbers = await generatePhoneNumbers(country);
+      const phoneNumbers = await generatePhoneNumbers(country, match);
       thunkAPI.dispatch(getNumbers(phoneNumbers));
       thunkAPI.dispatch(setgenerateLoading(false));
     } catch (error) {
@@ -48,16 +48,19 @@ export const checkWhatsApp = createAsyncThunk<void, string>(
 
 export const sendMessage = createAsyncThunk<
   void,
-  { messages: string; phoneNumbers: String[] }
->("generate/sendMessage", async ({ messages, phoneNumbers }, thunkAPI) => {
-  try {
-    thunkAPI.dispatch(loadingMessage(false));
-    await sendwhatsAppMessage(messages, phoneNumbers);
-    thunkAPI.dispatch(loadingMessage(true));
-  } catch (error) {
-    thunkAPI.dispatch(loadingMessage(false));
+  { time: any; messages: string; phoneNumbers: String[] }
+>(
+  "generate/sendMessage",
+  async ({ time, messages, phoneNumbers }, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(loadingMessage(false));
+      await sendwhatsAppMessage(time, messages, phoneNumbers);
+      thunkAPI.dispatch(loadingMessage(true));
+    } catch (error) {
+      thunkAPI.dispatch(loadingMessage(false));
+    }
   }
-});
+);
 
 export const uploadcsv = createAsyncThunk<void, File>(
   "/generate/upload",

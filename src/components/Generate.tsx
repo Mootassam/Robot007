@@ -37,12 +37,13 @@ function Generate() {
   const [message, setMessage] = useState("");
   const [msg, setMsg] = useState("");
   const [country, setCountry] = useState("HK");
-  const [minute, setMinute] = useState("");
+  const [minute, setMinute] = useState("1");
   const [done, setDone] = useState(false);
   const numbers = useSelector(selectphoneNumbers);
   const generateLoading = useSelector(selectGenerateLoading);
   const loadingChek = useSelector(checkLoading);
   const uploadLoading = useSelector(fileLoading);
+  const [match, setMatch] = useState("10");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
@@ -61,7 +62,7 @@ function Generate() {
   };
 
   useEffect(() => {
-    const socket = io("http://192.168.3.16:8080");
+    const socket = io("http://192.168.90.76:8080");
     // Emit events to the server
     socket.on("send", (data) => {
       console.log(data);
@@ -107,7 +108,7 @@ function Generate() {
   ]);
 
   const generate = async () => {
-    await dispatch(generateNumbers(country));
+    await dispatch(generateNumbers({ country, match }));
   };
   const downloadcsv = async (data: any) => {
     dispatch(download(data));
@@ -124,7 +125,11 @@ function Generate() {
   // im the console //
   const submit = async () => {
     await dispatch(
-      sendMessage({ messages: msg, phoneNumbers: RegisteredNumber })
+      sendMessage({
+        time: minute,
+        messages: msg,
+        phoneNumbers: RegisteredNumber,
+      })
     );
   };
 
@@ -179,11 +184,24 @@ function Generate() {
               </div>
 
               <div className="generate__buttons">
+                <div className="select__country">
+                  <label htmlFor="country">How Much</label>
+
+                  <input
+                    type="number"
+                    className=""
+                    name="items"
+                    onChange={(e) => setMatch(e.target.value)}
+                    placeholder="Write the numbers"
+                    maxLength={1000}
+                  />
+                </div>
+
                 <div className="form__group">
                   <button onClick={() => generate()} disabled={generateLoading}>
                     {generateLoading
                       ? "Extracting..."
-                      : "Extracting 1000 Numbers"}
+                      : `Extracting ${match} Numbers`}
                   </button>
                 </div>
                 <div className="form__group">
@@ -259,13 +277,6 @@ function Generate() {
                     </button>
                   </div>
                 </div>
-
-                <div className="reply__group">
-                  <span className="total__text"> Replies:</span>
-                  <span className="total__number pink">
-                    {rejectedNumber.length}
-                  </span>
-                </div>
               </div>
 
               <div className="send__message">
@@ -278,7 +289,7 @@ function Generate() {
                       type="text"
                       placeholder="please select schedule time between message"
                       className="minute"
-                      maxLength={1}
+                      maxLength={100}
                       onChange={(e) => setMinute(e.target.value)}
                     />
                   </span>
@@ -293,8 +304,6 @@ function Generate() {
                 <button className="message__button" onClick={() => submit()}>
                   Send
                 </button>
-
-                <button className="stop__message"> STOP</button>
               </div>
             </div>
           )}

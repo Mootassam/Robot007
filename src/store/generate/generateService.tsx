@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export const generatePhoneNumbers = async (country: any) => {
+export const generatePhoneNumbers = async (country: any, much: any) => {
   try {
     const response = await axios.post(
-      "http://192.168.3.16:8080/api/phone/generate",
-      { country: country }
+      "http://192.168.90.76:8080/api/phone/generate",
+      { country: country, much: much }
     );
     return response.data;
   } catch (error) {
@@ -16,7 +16,7 @@ export const generatePhoneNumbers = async (country: any) => {
 export const checkwhatsAppNumber = async (numbers: any) => {
   try {
     const response = await axios.post(
-      "http://192.168.3.16:8080/api/phone/save",
+      "http://192.168.90.76:8080/api/phone/save",
       {
         users: numbers,
       }
@@ -29,11 +29,15 @@ export const checkwhatsAppNumber = async (numbers: any) => {
   }
 };
 
-export const sendwhatsAppMessage = async (message: any, phoneNumbers: any) => {
+export const sendwhatsAppMessage = async (
+  time: any,
+  message: any,
+  phoneNumbers: any
+) => {
   try {
     const response = await axios.post(
-      "http://192.168.3.16:8080/api/phone/message",
-      { message: message, phoneNumbers: phoneNumbers }
+      "http://192.168.90.76:8080/api/phone/message",
+      { time: time, message: message, phoneNumbers: phoneNumbers }
     );
     return response.data;
   } catch (error) {
@@ -48,7 +52,7 @@ export const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("csvFile", file);
     const response = await axios.post(
-      "http://192.168.3.16:8080/api/phone/upload",
+      "http://192.168.90.76:8080/api/phone/upload",
       formData,
       {
         headers: {
@@ -63,7 +67,7 @@ export const uploadFile = async (file) => {
 export const downloadFile = async (data) => {
   try {
     const response = await axios.post(
-      "http://192.168.3.16:8080/api/phone/download",
+      "http://192.168.90.76:8080/api/phone/download",
       {
         phoneNumbers: data,
       },
