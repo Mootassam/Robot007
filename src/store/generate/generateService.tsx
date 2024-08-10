@@ -3,7 +3,7 @@ import axios from "axios";
 export const generatePhoneNumbers = async (country: any, much: any) => {
   try {
     const response = await axios.post(
-      "http://192.168.90.76:8080/api/phone/generate",
+      "http://192.168.1.43:8080/api/phone/generate",
       { country: country, much: much }
     );
     return response.data;
@@ -16,7 +16,7 @@ export const generatePhoneNumbers = async (country: any, much: any) => {
 export const checkwhatsAppNumber = async (numbers: any) => {
   try {
     const response = await axios.post(
-      "http://192.168.90.76:8080/api/phone/save",
+      "http://192.168.1.43:8080/api/phone/save",
       {
         users: numbers,
       }
@@ -36,7 +36,7 @@ export const sendwhatsAppMessage = async (
 ) => {
   try {
     const response = await axios.post(
-      "http://192.168.90.76:8080/api/phone/message",
+      "http://192.168.1.43:8080/api/phone/message",
       { time: time, message: message, phoneNumbers: phoneNumbers }
     );
     return response.data;
@@ -52,7 +52,7 @@ export const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("csvFile", file);
     const response = await axios.post(
-      "http://192.168.90.76:8080/api/phone/upload",
+      "http://192.168.1.43:8080/api/phone/upload",
       formData,
       {
         headers: {
@@ -67,7 +67,7 @@ export const uploadFile = async (file) => {
 export const downloadFile = async (data) => {
   try {
     const response = await axios.post(
-      "http://192.168.90.76:8080/api/phone/download",
+      "http://192.168.1.43:8080/api/phone/download",
       {
         phoneNumbers: data,
       },

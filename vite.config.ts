@@ -5,9 +5,9 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 80, // Specify the port number you want to use
+    port: 5173, // Specify the port number you want to use
     strictPort: true, // Enable strict port checking
-    host: "192.168.90.76", // Specify the hostname
+    host: "192.168.1.43", // Specify the hostname 
     open: true, // Automatically open the browser
   },
 });

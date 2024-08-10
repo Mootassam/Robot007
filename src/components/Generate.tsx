@@ -62,7 +62,7 @@ function Generate() {
   };
 
   useEffect(() => {
-    const socket = io("http://192.168.90.76:8080");
+    const socket = io("http://192.168.1.43:8080");
     // Emit events to the server
     socket.on("send", (data) => {
       console.log(data);
